@@ -375,6 +375,7 @@ export class ChatGPTApi implements LLMApi {
     }
   }
   async usage() {
+    console.log("wangjintao");
     const formatDate = (d: Date) =>
       `${d.getFullYear()}-${(d.getMonth() + 1).toString().padStart(2, "0")}-${d
         .getDate()
@@ -403,6 +404,7 @@ export class ChatGPTApi implements LLMApi {
     ]);
 
     if (used.status === 401) {
+      location.href = "/#/auth";
       throw new Error(Locale.Error.Unauthorized);
     }
 

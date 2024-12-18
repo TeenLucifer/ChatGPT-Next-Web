@@ -268,6 +268,16 @@ export function Input(props: InputProps) {
   );
 }
 
+export function RegularInput(
+  props: HTMLProps<HTMLInputElement> & { aria?: string },
+) {
+  return (
+    <div className={"regular-input-container"}>
+      <input {...props} type={"text"} className={"regular-input"} />
+    </div>
+  );
+}
+
 export function PasswordInput(
   props: HTMLProps<HTMLInputElement> & { aria?: string },
 ) {
@@ -278,16 +288,16 @@ export function PasswordInput(
 
   return (
     <div className={"password-input-container"}>
+      <input
+        {...props}
+        type={visible ? "text" : "password"}
+        className={"password-input"}
+      />
       <IconButton
         aria={props.aria}
         icon={visible ? <EyeIcon /> : <EyeOffIcon />}
         onClick={changeVisibility}
         className={"password-eye"}
-      />
-      <input
-        {...props}
-        type={visible ? "text" : "password"}
-        className={"password-input"}
       />
     </div>
   );

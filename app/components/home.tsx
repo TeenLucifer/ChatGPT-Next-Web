@@ -74,6 +74,14 @@ const Sd = dynamic(async () => (await import("./sd")).Sd, {
   loading: () => <Loading noLogo />,
 });
 
+const Auth = dynamic(async () => (await import("./auth")).AuthPage, {
+  loading: () => <Loading noLogo />,
+});
+
+const Login = dynamic(async () => (await import("./login")).LoginPage, {
+  loading: () => <Loading noLogo />,
+});
+
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -157,6 +165,8 @@ function Screen() {
   const isAuth = location.pathname === Path.Auth;
   const isSd = location.pathname === Path.Sd;
   const isSdNew = location.pathname === Path.SdNew;
+  const isChat = location.pathname === Path.Chat;
+  const isLogin = location.pathname === Path.Login;
 
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
@@ -181,12 +191,12 @@ function Screen() {
       <>
         <SideBar
           className={clsx({
-            [styles["sidebar-show"]]: isHome,
+            [styles["sidebar-show"]]: isChat,
           })}
         />
         <WindowContent>
           <Routes>
-            <Route path={Path.Home} element={<Chat />} />
+            <Route path={Path.Home} element={<Login />} />
             <Route path={Path.NewChat} element={<NewChat />} />
             <Route path={Path.Masks} element={<MaskPage />} />
             <Route path={Path.Plugins} element={<PluginPage />} />
