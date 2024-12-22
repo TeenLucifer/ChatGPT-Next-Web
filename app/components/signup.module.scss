@@ -1,4 +1,4 @@
-.login-page {
+.signup-page {
   display: flex;
   justify-content: flex-start;
   align-items: center;
@@ -55,7 +55,7 @@
     }
   }
 
-  .login-header {
+  .signup-header {
     display: flex;
     justify-content: space-between;
     width: 100%;
@@ -64,20 +64,20 @@
     animation: slide-in-from-top ease 0.3s;
   }
 
-  .login-logo {
+  .signup-logo {
     margin-top: 10vh;
     transform: scale(1.4);
     margin-bottom: 5vh;
   }
 
-  .login-title {
+  .signup-title {
     font-size: 36px;
     font-weight: bold;
     line-height: 2;
     margin-bottom: 5vh;
   }
 
-  .login-actions {
+  .signup-actions {
     display: flex;
     justify-content: center;
     flex-direction: column;
@@ -87,7 +87,7 @@
     }
   }
 
-  .login-container {
+  .signup-container {
     display: flex;;
     flex-direction: column;
     margin-left: 50px;
@@ -97,7 +97,7 @@
     justify-content: center;
   }
 
-  .login-input-container {
+  .signup-input-container {
     min-width: 90%;
     flex-grow: 1;
     display: flex;
@@ -105,7 +105,7 @@
     flex-direction: column;
   }
 
-  .login-passwd {
+  .signup-passwd {
     display: flex;
     flex-direction: row;
     align-items: center;
@@ -113,21 +113,20 @@
     //border: 1px solid #000000;
   }
 
-  .login-input {
+  .signup-input {
     text-align: left;
     min-width: 90%;
     //flex-grow: 1;
     font-size: 14px;
   }
-
-  .login-button {
+  .signup-button{
     max-width: 90%;
     max-height: 25%;
     flex-grow: 1;
     font-size: 14px;
   }
 
-  .login-jump {
+    .login-jump {
     max-width: 90%;
     margin-top: 2vh;
     font-size: 12px;
@@ -142,11 +141,6 @@
     a:hover {
       color: #000000; /* 鼠标悬停时的颜色 */
       text-decoration: underline; /* 鼠标悬停时显示下划线 */
-    }
-
-    .separator {
-      color: gray;
-      margin: 0 8px;
     }
   }
 }

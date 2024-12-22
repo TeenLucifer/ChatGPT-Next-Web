@@ -82,6 +82,10 @@ const Login = dynamic(async () => (await import("./login")).LoginPage, {
   loading: () => <Loading noLogo />,
 });
 
+const Signup = dynamic(async () => (await import("./signup")).SignupPage, {
+  loading: () => <Loading noLogo />,
+});
+
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -149,12 +153,25 @@ const loadAsyncGoogleFont = () => {
   document.head.appendChild(linkEl);
 };
 
-export function WindowContent(props: { children: React.ReactNode }) {
-  return (
-    <div className={styles["window-content"]} id={SlotID.AppBody}>
-      {props?.children}
-    </div>
-  );
+export function WindowContent(props: {
+  children: React.ReactNode;
+  isHome: boolean;
+  isLogin: boolean;
+  isSignup: boolean;
+}) {
+  if (props.isHome || props.isLogin || props.isSignup) {
+    return (
+      <div className={styles["window-content-nosidebar"]} id={SlotID.AppBody}>
+        {props?.children}
+      </div>
+    );
+  } else {
+    return (
+      <div className={styles["window-content"]} id={SlotID.AppBody}>
+        {props?.children}
+      </div>
+    );
+  }
 }
 
 function Screen() {
@@ -167,6 +184,7 @@ function Screen() {
   const isSdNew = location.pathname === Path.SdNew;
   const isChat = location.pathname === Path.Chat;
   const isLogin = location.pathname === Path.Login;
+  const isSignup = location.pathname === Path.Signup;
 
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
@@ -189,12 +207,14 @@ function Screen() {
     if (isSdNew) return <Sd />;
     return (
       <>
-        <SideBar
-          className={clsx({
-            [styles["sidebar-show"]]: isChat,
-          })}
-        />
-        <WindowContent>
+        {!isLogin && !isSignup && !isHome && (
+          <SideBar
+            className={clsx({
+              [styles["sidebar-show"]]: isChat,
+            })}
+          />
+        )}
+        <WindowContent isHome={isHome} isLogin={isLogin} isSignup={isSignup}>
           <Routes>
             <Route path={Path.Home} element={<Login />} />
             <Route path={Path.NewChat} element={<NewChat />} />
@@ -203,6 +223,8 @@ function Screen() {
             <Route path={Path.SearchChat} element={<SearchChat />} />
             <Route path={Path.Chat} element={<Chat />} />
             <Route path={Path.Settings} element={<Settings />} />
+            <Route path={Path.Login} element={<Login />} />
+            <Route path={Path.Signup} element={<Signup />} />
           </Routes>
         </WindowContent>
       </>

@@ -1,4 +1,4 @@
-import styles from "./login.module.scss";
+import styles from "./signup.module.scss";
 import { IconButton } from "./button";
 import { useState, useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
@@ -23,12 +23,12 @@ import clsx from "clsx";
 
 const storage = safeLocalStorage();
 
-export function LoginPage() {
+export function SignupPage() {
   const navigate = useNavigate();
   const accessStore = useAccessStore();
   const goHome = () => navigate(Path.Home);
   const goChat = () => navigate(Path.Chat);
-  const goSignup = () => navigate(Path.Signup);
+  const goLogin = () => navigate(Path.Login);
   const goSaas = () => {
     trackAuthorizationPageButtonToCPaymentClick();
     window.location.href = SAAS_CHAT_URL;
@@ -54,37 +54,52 @@ export function LoginPage() {
   }
 
   return (
-    <div className={styles["login-page"]}>
-      <div className={styles["login-header"]}>
+    <div className={styles["signup-page"]}>
+      <div className={styles["signup-header"]}>
         <IconButton
           icon={<LeftIcon />}
-          text={Locale.Login.Return}
+          text={Locale.Signup.Return}
           onClick={() => navigate(Path.Home)}
         ></IconButton>
       </div>
 
-      <div className={clsx("no-dark", styles["login-logo"])}>
+      <div className={clsx("no-dark", styles["signup-logo"])}>
         <BotIcon />
       </div>
 
-      <div className={styles["login-title"]}>{Locale.Login.Title}</div>
+      <div className={styles["signup-title"]}>{Locale.Signup.Title}</div>
 
-      <div className={styles["login-container"]}>
+      <div className={styles["signup-container"]}>
         <input
           type={"text"}
-          className={styles["login-input"]}
-          placeholder={Locale.Login.Account}
+          className={styles["signup-input"]}
+          placeholder={Locale.Signup.Account}
           style={{ marginBottom: "10px" }}
         />
 
         <div
-          className={styles["login-passwd"]}
+          className={styles["signup-passwd"]}
           style={{ marginBottom: "10px" }}
         >
           <input
             type={passwd_visible ? "text" : "password"}
-            className={styles["login-input"]}
-            placeholder={Locale.Login.Password}
+            className={styles["signup-input"]}
+            placeholder={Locale.Signup.Password}
+          />
+          <IconButton
+            icon={passwd_visible ? <EyeIcon /> : <EyeOffIcon />}
+            onClick={changePasswdVisibility}
+          />
+        </div>
+
+        <div
+          className={styles["signup-passwd"]}
+          style={{ marginBottom: "10px" }}
+        >
+          <input
+            type={passwd_visible ? "text" : "password"}
+            className={styles["signup-input"]}
+            placeholder={Locale.Signup.PasswordConfirm}
           />
           <IconButton
             icon={passwd_visible ? <EyeIcon /> : <EyeOffIcon />}
@@ -93,16 +108,14 @@ export function LoginPage() {
         </div>
 
         <IconButton
-          text={Locale.Login.Confirm}
+          text={Locale.Signup.Confirm}
           type="primary"
-          //onClick={goChat}
-          className={styles["login-button"]}
+          onClick={goLogin}
+          className={styles["signup-button"]}
         />
 
         <div className={styles["login-jump"]}>
-          <Link to={Path.Signup}>忘记密码?</Link>
-          <span className={styles["separator"]}>|</span>
-          <Link to={Path.Signup}>注册账号</Link>
+          <Link to={Path.Login}>已有账号, 去登录</Link>
         </div>
       </div>
     </div>

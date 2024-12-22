@@ -44,6 +44,7 @@ export enum Path {
   Plugins = "/plugins",
   Auth = "/auth",
   Login = "/login",
+  Signup = "/signup",
   Sd = "/sd",
   SdNew = "/sd-new",
   Artifacts = "/artifacts",
