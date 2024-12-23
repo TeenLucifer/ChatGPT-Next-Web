@@ -42,7 +42,7 @@ const cn = {
     Return: "返回主页",
     Title: "注册账号",
     Account: "账号/邮箱/手机号",
-    Password: "密码",
+    Password: "输入至少6位密码",
     PasswordConfirm: "重新输入密码",
     Confirm: "注册",
     TopTips:
