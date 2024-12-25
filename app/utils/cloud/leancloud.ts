@@ -37,7 +37,7 @@ async function UserLogin(account: string, passwd: string) {
   //}
 }
 
-export async function UserSignup(account: string, passwd: string) {
+export async function LeanCloudUserSignup(account: string, passwd: string) {
   const user = new AV.User();
   user.setUsername(account);
   user.setPassword(passwd);

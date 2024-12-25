@@ -6,6 +6,15 @@
   width: 100%;
   flex-direction: column;
 
+  .signup-form {
+    min-width: 30%;
+  }
+
+  .signup-gologin {
+    display: flex;
+    justify-content: flex-end;
+  }
+
   .top-banner {
     position: relative;
     width: 100%;
@@ -84,63 +93,6 @@
 
     button:not(:last-child) {
       margin-bottom: 10px;
-    }
-  }
-
-  .signup-container {
-    display: flex;;
-    flex-direction: column;
-    margin-left: 50px;
-    width: 30%;
-    max-height: 50%;
-    //border: 1px solid #000000;
-    justify-content: center;
-  }
-
-  .signup-input-container {
-    min-width: 90%;
-    flex-grow: 1;
-    display: flex;
-    justify-content: center;
-    flex-direction: column;
-  }
-
-  .signup-passwd {
-    display: flex;
-    flex-direction: row;
-    align-items: center;
-    min-width: 100%;
-    //border: 1px solid #000000;
-  }
-
-  .signup-input {
-    text-align: left;
-    min-width: 90%;
-    //flex-grow: 1;
-    font-size: 14px;
-  }
-  .signup-button{
-    max-width: 90%;
-    max-height: 25%;
-    flex-grow: 1;
-    font-size: 14px;
-  }
-
-    .login-jump {
-    max-width: 90%;
-    margin-top: 2vh;
-    font-size: 12px;
-    text-align: right;
-
-    a {
-      color: inherit; /* 继承父元素的颜色 */
-      text-decoration: none; /* 移除默认的下划线 */
-      transition: color 0.3s, text-decoration 0.3s; /* 添加过渡效果 */
-    }
-
-    a:hover {
-      color: #000000; /* 鼠标悬停时的颜色 */
-      text-decoration: underline; /* 鼠标悬停时显示下划线 */
     }
   }
 }

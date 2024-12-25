@@ -150,7 +150,7 @@ label {
 }
 
 input {
-  text-align: center;
+  text-align: left;
   font-family: inherit;
 }
 
@@ -226,18 +226,18 @@ input[type="range"]::-ms-thumb:hover {
 
 input[type="number"],
 input[type="text"],
-input[type="password"] {
-  appearance: none;
-  border-radius: 10px;
-  border: var(--border-in-light);
-  min-height: 36px;
-  box-sizing: border-box;
-  background: var(--white);
-  color: var(--black);
-  padding: 0 10px;
-  max-width: 50%;
-  font-family: inherit;
-}
+//input[type="password"] {
+//  appearance: none;
+//  border-radius: 10px;
+//  border: var(--border-in-light);
+//  min-height: 36px;
+//  box-sizing: border-box;
+//  background: var(--white);
+//  color: var(--black);
+//  padding: 0 10px;
+//  max-width: 50%;
+//  font-family: inherit;
+//}
 
 div.math {
   overflow-x: auto;

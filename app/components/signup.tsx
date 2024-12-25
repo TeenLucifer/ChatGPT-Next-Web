@@ -1,27 +1,25 @@
 import styles from "./signup.module.scss";
 import { IconButton } from "./button";
-import { useState, useEffect } from "react";
+import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Path, SAAS_CHAT_URL } from "../constant";
 import { useAccessStore } from "../store";
 import Locale from "../locales";
-import EyeIcon from "../icons/eye.svg";
-import EyeOffIcon from "../icons/eye-off.svg";
 import BotIcon from "../icons/bot.svg";
 import { getClientConfig } from "../config/client";
 import LeftIcon from "@/app/icons/left.svg";
 import { safeLocalStorage } from "@/app/utils";
 import { trackAuthorizationPageButtonToCPaymentClick } from "../utils/auth-settings-events";
-import clsx from "clsx";
-import { UserSignup } from "../utils/cloud/leancloud";
-import { message } from "antd";
+import { LeanCloudUserSignup } from "../utils/cloud/leancloud";
+import { LockOutlined, UserOutlined } from "@ant-design/icons";
+import { Form, Input, Button, message } from "antd";
+import React from "react";
 
 const storage = safeLocalStorage();
 
-async function signUp() {
-  const account = "wangjintao1999@gmail.com";
-  const passwd = "12345678";
-  let ret = await UserSignup(account, passwd);
+// 调后台注册接口
+async function signUp(account: any, password: any) {
+  let ret = await LeanCloudUserSignup(account, password);
 
   if (ret.status === "success") {
     message.success(ret.message);
@@ -29,6 +27,54 @@ async function signUp() {
     message.error(ret.message);
   }
 }
+
+// 注册逻辑
+const onSignupFinish = (values: any) => {
+  console.log("Received values of form: ", values);
+  const account = values.account;
+  const password = values.password;
+  console.log(account);
+  console.log(password);
+  signUp(account, password);
+};
+
+// 校验账号
+const validateAccount = (_: any, value: any) => {
+  const phoneRegex = /^1[3-9]\d{9}$/; // 11位手机号正则表达式
+  const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // 邮箱正则表达式
+
+  if (!value) {
+    return Promise.reject(new Error("输入手机号或邮箱注册!"));
+  } else if (!phoneRegex.test(value) && !emailRegex.test(value)) {
+    return Promise.reject(new Error("请输入有效的手机号或邮箱!"));
+  } else {
+    return Promise.resolve();
+  }
+};
+
+// 校验密码
+const validatePassword = (_: any, value: any) => {
+  if (!value) {
+    return Promise.reject(new Error("请输入密码!"));
+  } else if (value.length < 6) {
+    return Promise.reject(new Error("密码长度至少为6位!"));
+  } else {
+    return Promise.resolve();
+  }
+};
+
+// 确认密码
+const validateConfirmPassword = ({ getFieldValue }: any) => ({
+  validator(_: any, value: any) {
+    if (!value) {
+      return Promise.reject();
+    } else if (getFieldValue("password") != value) {
+      return Promise.reject(new Error("两次输入的密码不一致!"));
+    } else {
+      return Promise.resolve();
+    }
+  },
+});
 
 export function SignupPage() {
   const navigate = useNavigate();
@@ -41,24 +87,12 @@ export function SignupPage() {
     window.location.href = SAAS_CHAT_URL;
   };
 
-  const resetAccessCode = () => {
-    accessStore.update((access) => {
-      access.openaiApiKey = "";
-      access.accessCode = "";
-    });
-  }; // Reset access code to empty string
-
   useEffect(() => {
     if (getClientConfig()?.isApp) {
       navigate(Path.Settings);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  const [passwd_visible, setPasswdVisible] = useState(false);
-  function changePasswdVisibility() {
-    setPasswdVisible(!passwd_visible);
-  }
 
   return (
     <div className={styles["signup-page"]}>
@@ -70,61 +104,54 @@ export function SignupPage() {
         ></IconButton>
       </div>
 
-      <div className={clsx("no-dark", styles["signup-logo"])}>
+      <div className={styles["signup-logo"]}>
         <BotIcon />
       </div>
 
       <div className={styles["signup-title"]}>{Locale.Signup.Title}</div>
 
-      <div className={styles["signup-container"]}>
-        <input
-          type={"text"}
-          className={styles["signup-input"]}
-          placeholder={Locale.Signup.Account}
-          style={{ marginBottom: "10px" }}
-        />
-
-        <div
-          className={styles["signup-passwd"]}
-          style={{ marginBottom: "10px" }}
+      <Form
+        name="login"
+        initialValues={{ remember: true }}
+        onFinish={onSignupFinish}
+        labelAlign="left"
+        className={styles["signup-form"]}
+      >
+        <Form.Item
+          name="account"
+          rules={[{ required: true, validator: validateAccount }]}
         >
-          <input
-            type={passwd_visible ? "text" : "password"}
-            className={styles["signup-input"]}
-            placeholder={Locale.Signup.Password}
-          />
-          <IconButton
-            icon={passwd_visible ? <EyeIcon /> : <EyeOffIcon />}
-            onClick={changePasswdVisibility}
-          />
-        </div>
+          <Input prefix={<UserOutlined />} placeholder="手机号/邮箱" />
+        </Form.Item>
 
-        <div
-          className={styles["signup-passwd"]}
-          style={{ marginBottom: "10px" }}
+        <Form.Item
+          name="password"
+          rules={[{ required: true, validator: validatePassword }]}
         >
-          <input
-            type={passwd_visible ? "text" : "password"}
-            className={styles["signup-input"]}
-            placeholder={Locale.Signup.PasswordConfirm}
-          />
-          <IconButton
-            icon={passwd_visible ? <EyeIcon /> : <EyeOffIcon />}
-            onClick={changePasswdVisibility}
-          />
-        </div>
+          <Input.Password prefix={<LockOutlined />} placeholder="输入密码" />
+        </Form.Item>
 
-        <IconButton
-          text={Locale.Signup.Confirm}
-          type="primary"
-          onClick={signUp}
-          className={styles["signup-button"]}
-        />
+        <Form.Item
+          name="password-confirm"
+          dependencies={["password"]}
+          rules={[
+            { required: true, message: "需要再次输入密码确认!" },
+            validateConfirmPassword,
+          ]}
+        >
+          <Input.Password prefix={<LockOutlined />} placeholder="确认密码 " />
+        </Form.Item>
 
-        <div className={styles["login-jump"]}>
+        <Form.Item className={styles["signup-gologin"]}>
           <Link to={Path.Login}>已有账号, 去登录</Link>
-        </div>
-      </div>
+        </Form.Item>
+
+        <Form.Item>
+          <Button block type="primary" htmlType="submit">
+            确认注册
+          </Button>
+        </Form.Item>
+      </Form>
     </div>
   );
 }
