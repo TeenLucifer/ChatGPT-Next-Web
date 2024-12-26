@@ -12,29 +12,42 @@ AV.init({
   serverURL: SERVER_URL,
 });
 
-async function UserLogin(account: string, passwd: string) {
-  //const user = new AV.User();
-  //let signin_response;
-  //user.setUsername(account);
-  //user.setPassword(passwd);
-  //user.set("gender", "secret");
-  //try {
-  //  const signed_in_user = await user.logIn();
-  //  signin_response = {
-  //    status: "success",
-  //    user_id: signed_in_user.getObjectId(),
-  //    account: account
-  //  };
-  //  return signin_response;
-  //}
-  //catch (error) {
-  //  signin_response = {
-  //    status: "failed",
-  //    code: error.code,
-  //    message: error.message
-  //  };
-  //  return signin_response;
-  //}
+export async function LeanCloudUserLogin(account: string, passwd: string) {
+  const user = new AV.User();
+  let ret_message: string = "登录失败";
+  let signin_response = {
+    status: "failed",
+    user_id: "",
+    message: ret_message,
+  };
+  user.setUsername(account);
+  user.setPassword(passwd);
+  user.set("gender", "secret");
+  try {
+    const signed_in_user = await user.logIn();
+    signin_response = {
+      status: "success",
+      user_id: signed_in_user.getObjectId(),
+      message: "登录成功",
+    };
+    return signin_response;
+  } catch (error: any) {
+    if (211 === error.code) {
+      ret_message = "用户不存在";
+    } else if (210 === error.code) {
+      ret_message = "密码错误";
+    } else {
+      ret_message = "登录失败";
+    }
+
+    signin_response = {
+      status: "failed",
+      user_id: "",
+      message: ret_message,
+    };
+    return signin_response;
+  }
+  return signin_response;
 }
 
 export async function LeanCloudUserSignup(account: string, passwd: string) {

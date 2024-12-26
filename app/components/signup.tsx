@@ -13,29 +13,32 @@ import { trackAuthorizationPageButtonToCPaymentClick } from "../utils/auth-setti
 import { LeanCloudUserSignup } from "../utils/cloud/leancloud";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Input, Button, message } from "antd";
-import React from "react";
 
 const storage = safeLocalStorage();
 
 // 调后台注册接口
-async function signUp(account: any, password: any) {
+async function signUp(account: any, password: any, navigate: any) {
+  // 调用后台注册接口
   let ret = await LeanCloudUserSignup(account, password);
 
   if (ret.status === "success") {
+    // 注册成功就跳转到登录页面
     message.success(ret.message);
+    setTimeout(() => {
+      navigate(Path.Login);
+    }, 1500);
   } else {
+    // 注册失败就提示错误信息
     message.error(ret.message);
   }
 }
 
 // 注册逻辑
-const onSignupFinish = (values: any) => {
-  console.log("Received values of form: ", values);
+const onSignupFinish = (values: any, navigate: any) => {
   const account = values.account;
   const password = values.password;
-  console.log(account);
-  console.log(password);
-  signUp(account, password);
+
+  signUp(account, password, navigate);
 };
 
 // 校验账号
@@ -91,7 +94,6 @@ export function SignupPage() {
     if (getClientConfig()?.isApp) {
       navigate(Path.Settings);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -113,7 +115,7 @@ export function SignupPage() {
       <Form
         name="login"
         initialValues={{ remember: true }}
-        onFinish={onSignupFinish}
+        onFinish={(values) => onSignupFinish(values, navigate)}
         labelAlign="left"
         className={styles["signup-form"]}
       >

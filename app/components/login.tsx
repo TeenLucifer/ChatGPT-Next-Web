@@ -13,15 +13,33 @@ import { trackAuthorizationPageButtonToCPaymentClick } from "../utils/auth-setti
 import clsx from "clsx";
 
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
-import { Form, Input, Flex, Button, Checkbox } from "antd";
+import { Form, Input, Flex, Button, Checkbox, message } from "antd";
+import { LeanCloudUserLogin } from "../utils/cloud/leancloud";
 
 const storage = safeLocalStorage();
 
+async function logIn(account: any, password: any, navigate: any) {
+  // 调用后台登录接口
+  let ret = await LeanCloudUserLogin(account, password);
+
+  if (ret.status === "success") {
+    // 登录成功就跳转到功能页面
+    message.success(ret.message);
+    setTimeout(() => {
+      navigate(Path.Chat);
+    }, 1500);
+  } else {
+    // 登录失败就提示错误信息
+    message.error(ret.message);
+  }
+}
+
 // 登录逻辑
-const onLoginFinish = (values: any) => {
-  console.log("Received values of form: ", values);
-  console.log(values.account);
-  console.log(values.password);
+const onLoginFinish = (values: any, navigate: any) => {
+  const account = values.account;
+  const password = values.password;
+
+  logIn(account, password, navigate);
 };
 
 // 校验账号
@@ -64,7 +82,6 @@ export function LoginPage() {
     if (getClientConfig()?.isApp) {
       navigate(Path.Settings);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -86,7 +103,7 @@ export function LoginPage() {
       <Form
         name="login"
         initialValues={{ remember: true }}
-        onFinish={onLoginFinish}
+        onFinish={(values) => onLoginFinish(values, navigate)}
         className={styles["login-form"]}
       >
         <Form.Item
