@@ -2,14 +2,12 @@ import styles from "./login.module.scss";
 import { IconButton } from "./button";
 import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Path, SAAS_CHAT_URL } from "../constant";
+import { Path } from "../constant";
 import { useAccessStore } from "../store";
 import Locale from "../locales";
 import BotIcon from "../icons/bot.svg";
-import { getClientConfig } from "../config/client";
 import LeftIcon from "@/app/icons/left.svg";
 import { safeLocalStorage } from "@/app/utils";
-import { trackAuthorizationPageButtonToCPaymentClick } from "../utils/auth-settings-events";
 import clsx from "clsx";
 
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
@@ -18,13 +16,43 @@ import { LeanCloudUserLogin } from "../utils/cloud/leancloud";
 
 const storage = safeLocalStorage();
 
+const EXPIRATION_DAYS = 10;
+const MILLISECONDS_IN_A_DAY = 24 * 60 * 60 * 1000;
+
+function storeUserId(user_id: any) {
+  const now = new Date().getTime();
+  const expirationTime = now + EXPIRATION_DAYS * MILLISECONDS_IN_A_DAY;
+  localStorage.setItem("user_id", user_id);
+  localStorage.setItem("user_id_expiraion", expirationTime.toString());
+}
+
+// 校验当前用户是否过期
+function getUserId() {
+  const userId = localStorage.getItem("user_id");
+  const expirationTimeStr = localStorage.getItem("user_id_expiration");
+  const expirationTime = expirationTimeStr
+    ? parseInt(expirationTimeStr, 10)
+    : null;
+  const now = new Date().getTime();
+
+  if (expirationTime && now > expirationTime) {
+    localStorage.removeItem("user_id");
+    localStorage.removeItem("user_id_expiration");
+    return null;
+  }
+
+  return userId;
+}
+
 async function logIn(account: any, password: any, navigate: any) {
   // 调用后台登录接口
   let ret = await LeanCloudUserLogin(account, password);
 
   if (ret.status === "success") {
-    // 登录成功就跳转到功能页面
     message.success(ret.message);
+    // 登录成功就存储用户id到本地表示已登录
+    storeUserId(ret.user_id);
+    // 登录成功就跳转到功能页面
     setTimeout(() => {
       navigate(Path.Chat);
     }, 1500);
@@ -70,19 +98,14 @@ const validatePassword = (_: any, value: any) => {
 export function LoginPage() {
   const navigate = useNavigate();
   const accessStore = useAccessStore();
-  const goHome = () => navigate(Path.Home);
-  const goChat = () => navigate(Path.Chat);
-  const goSignup = () => navigate(Path.Signup);
-  const goSaas = () => {
-    trackAuthorizationPageButtonToCPaymentClick();
-    window.location.href = SAAS_CHAT_URL;
-  };
 
+  // 页面加载时校验用户登录是否有效，如果已经有效就直接跳转到功能页面, 无需登录
   useEffect(() => {
-    if (getClientConfig()?.isApp) {
-      navigate(Path.Settings);
+    const user_id = getUserId();
+    if (user_id) {
+      navigate(Path.Chat);
     }
-  }, []);
+  }, [navigate]);
 
   return (
     <div className={styles["login-page"]}>
@@ -141,59 +164,4 @@ export function LoginPage() {
       </Form>
     </div>
   );
-
-  //return (
-  //  <div className={styles["login-page"]}>
-  //    <div className={styles["login-header"]}>
-  //      <IconButton
-  //        icon={<LeftIcon />}
-  //        text={Locale.Login.Return}
-  //        onClick={() => navigate(Path.Home)}
-  //      ></IconButton>
-  //    </div>
-
-  //    <div className={clsx("no-dark", styles["login-logo"])}>
-  //      <BotIcon />
-  //    </div>
-
-  //    <div className={styles["login-title"]}>{Locale.Login.Title}</div>
-
-  //    <div className={styles["login-container"]}>
-  //      <input
-  //        type={"text"}
-  //        className={styles["login-input"]}
-  //        placeholder={Locale.Login.Account}
-  //        style={{ marginBottom: "10px" }}
-  //      />
-
-  //      <div
-  //        className={styles["login-passwd"]}
-  //        style={{ marginBottom: "10px" }}
-  //      >
-  //        <input
-  //          type={passwd_visible ? "text" : "password"}
-  //          className={styles["login-input"]}
-  //          placeholder={Locale.Login.Password}
-  //        />
-  //        <IconButton
-  //          icon={passwd_visible ? <EyeIcon /> : <EyeOffIcon />}
-  //          onClick={changePasswdVisibility}
-  //        />
-  //      </div>
-
-  //      <IconButton
-  //        text={Locale.Login.Confirm}
-  //        type="primary"
-  //        //onClick={goChat}
-  //        className={styles["login-button"]}
-  //      />
-
-  //      <div className={styles["login-jump"]}>
-  //        <Link to={Path.Signup}>忘记密码?</Link>
-  //        <span className={styles["separator"]}>|</span>
-  //        <Link to={Path.Signup}>注册账号</Link>
-  //      </div>
-  //    </div>
-  //  </div>
-  //);
 }
