@@ -2,24 +2,29 @@ import styles from "./signup.module.scss";
 import { IconButton } from "./button";
 import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { Path, SAAS_CHAT_URL } from "../constant";
+import { Path } from "../constant";
 import { useAccessStore } from "../store";
 import Locale from "../locales";
 import BotIcon from "../icons/bot.svg";
 import { getClientConfig } from "../config/client";
 import LeftIcon from "@/app/icons/left.svg";
 import { safeLocalStorage } from "@/app/utils";
-import { trackAuthorizationPageButtonToCPaymentClick } from "../utils/auth-settings-events";
 import { LeanCloudUserSignup } from "../utils/cloud/leancloud";
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Input, Button, message } from "antd";
+import { generateDefaultAppState } from "../utils/sync";
 
 const storage = safeLocalStorage();
 
 // 调后台注册接口
 async function signUp(account: any, password: any, navigate: any) {
-  // 调用后台注册接口
-  let ret = await LeanCloudUserSignup(account, password);
+  // 注册时生成默认的应用配置
+  const default_app_state = generateDefaultAppState();
+  let ret = await LeanCloudUserSignup(
+    account,
+    password,
+    JSON.stringify(default_app_state),
+  );
 
   if (ret.status === "success") {
     // 注册成功就跳转到登录页面
@@ -82,13 +87,6 @@ const validateConfirmPassword = ({ getFieldValue }: any) => ({
 export function SignupPage() {
   const navigate = useNavigate();
   const accessStore = useAccessStore();
-  const goHome = () => navigate(Path.Home);
-  const goChat = () => navigate(Path.Chat);
-  const goLogin = () => navigate(Path.Login);
-  const goSaas = () => {
-    trackAuthorizationPageButtonToCPaymentClick();
-    window.location.href = SAAS_CHAT_URL;
-  };
 
   useEffect(() => {
     if (getClientConfig()?.isApp) {

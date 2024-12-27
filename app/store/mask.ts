@@ -46,6 +46,10 @@ export const createEmptyMask = () =>
     plugin: [],
   }) as Mask;
 
+export function getDefaultMaskState() {
+  return DEFAULT_MASK_STATE;
+}
+
 export const useMaskStore = createPersistStore(
   { ...DEFAULT_MASK_STATE },
 

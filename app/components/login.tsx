@@ -12,7 +12,12 @@ import clsx from "clsx";
 
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Input, Flex, Button, Checkbox, message } from "antd";
-import { LeanCloudUserLogin } from "../utils/cloud/leancloud";
+import {
+  LeanCloudUserLogin,
+  LeanCloudCheckUser,
+  LeanCloudQueryUserStateFieldData,
+} from "../utils/cloud/leancloud";
+import { setLocalAppStateFromeString } from "../utils/sync";
 
 const storage = safeLocalStorage();
 
@@ -26,14 +31,28 @@ function storeUserId(user_id: any) {
   localStorage.setItem("user_id_expiraion", expirationTime.toString());
 }
 
-// 校验当前用户是否过期
-function getUserId() {
-  const userId = localStorage.getItem("user_id");
+// TODO(wangjintao): getUserId/syncRemoteAppState/updateRemoteAppState三个函数应该属于全局通用, 找个合适的地方放
+
+// 从本地存储获取user_id并校验当前用户是否过期, 过期或没有返回null, 否则返回user_id
+async function getUserId() {
+  const id = localStorage.getItem("user_id");
   const expirationTimeStr = localStorage.getItem("user_id_expiration");
   const expirationTime = expirationTimeStr
     ? parseInt(expirationTimeStr, 10)
     : null;
   const now = new Date().getTime();
+  let user_id = "";
+  let user_vlaid = false;
+  if (!id) {
+    return null;
+  } else {
+    user_id = id;
+  }
+  // 云端查询该用户是否有效
+  user_vlaid = await LeanCloudCheckUser(user_id);
+  if (false === user_vlaid) {
+    return null;
+  }
 
   if (expirationTime && now > expirationTime) {
     localStorage.removeItem("user_id");
@@ -41,8 +60,21 @@ function getUserId() {
     return null;
   }
 
-  return userId;
+  return user_id;
 }
+
+async function syncRemoteAppState(user_id: string): Promise<void> {
+  const query_ret = await LeanCloudQueryUserStateFieldData(
+    user_id,
+    "app_state",
+  );
+  if (query_ret && typeof query_ret === "string") {
+    setLocalAppStateFromeString(query_ret);
+  }
+}
+
+// TODO(wangjintao): 更新云端的配置
+async function updateRemoteAppState(user_id: string) {}
 
 async function logIn(account: any, password: any, navigate: any) {
   // 调用后台登录接口
@@ -54,7 +86,10 @@ async function logIn(account: any, password: any, navigate: any) {
     storeUserId(ret.user_id);
     // 登录成功就跳转到功能页面
     setTimeout(() => {
-      navigate(Path.Chat);
+      // 登录成功加载云端配置并跳转到功能页
+      syncRemoteAppState(ret.user_id).then(() => {
+        navigate(Path.Chat);
+      });
     }, 1500);
   } else {
     // 登录失败就提示错误信息
@@ -99,12 +134,21 @@ export function LoginPage() {
   const navigate = useNavigate();
   const accessStore = useAccessStore();
 
-  // 页面加载时校验用户登录是否有效，如果已经有效就直接跳转到功能页面, 无需登录
   useEffect(() => {
-    const user_id = getUserId();
-    if (user_id) {
-      navigate(Path.Chat);
-    }
+    const checkUser = async () => {
+      // 查询本地存储的用户id是否有效
+      const user_id = await getUserId();
+      // 查询到该id有效用户
+      if (user_id) {
+        // 加载云端配置并跳转到功能页
+        syncRemoteAppState(user_id).then(() => {
+          navigate(Path.Chat);
+        });
+      }
+    };
+
+    // 页面加载时校验用户登录是否有效，如果已经有效就直接跳转到功能页面, 无需登录
+    checkUser();
   }, [navigate]);
 
   return (

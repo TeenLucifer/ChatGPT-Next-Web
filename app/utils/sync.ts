@@ -1,10 +1,13 @@
 import {
   ChatSession,
+  getDefaultAccessState,
+  getDefaultAppConfig,
+  getDefaultChatState,
   useAccessStore,
   useAppConfig,
   useChatStore,
 } from "../store";
-import { useMaskStore } from "../store/mask";
+import { getDefaultMaskState, useMaskStore } from "../store/mask";
 import { usePromptStore } from "../store/prompt";
 import { StoreKey } from "../constant";
 import { merge } from "./merge";
@@ -43,6 +46,14 @@ const LocalStateGetters = {
   [StoreKey.Access]: () => getNonFunctionFileds(useAccessStore.getState()),
   [StoreKey.Config]: () => getNonFunctionFileds(useAppConfig.getState()),
   [StoreKey.Mask]: () => getNonFunctionFileds(useMaskStore.getState()),
+  [StoreKey.Prompt]: () => getNonFunctionFileds(usePromptStore.getState()),
+} as const;
+
+const DefaultAppStateGenerators = {
+  [StoreKey.Chat]: () => getNonFunctionFileds(getDefaultChatState()),
+  [StoreKey.Access]: () => getNonFunctionFileds(getDefaultAccessState()),
+  [StoreKey.Config]: () => getNonFunctionFileds(getDefaultAppConfig()),
+  [StoreKey.Mask]: () => getNonFunctionFileds(getDefaultMaskState()),
   [StoreKey.Prompt]: () => getNonFunctionFileds(usePromptStore.getState()),
 } as const;
 
@@ -118,6 +129,16 @@ const MergeStates: StateMerger = {
   [StoreKey.Access]: mergeWithUpdate<AppState[StoreKey.Access]>,
 };
 
+export function generateDefaultAppState() {
+  const defaultAppState = Object.fromEntries(
+    Object.entries(DefaultAppStateGenerators).map(([key, getter]) => {
+      return [key, getter()];
+    }),
+  ) as AppState;
+
+  return defaultAppState;
+}
+
 export function getLocalAppState() {
   const appState = Object.fromEntries(
     Object.entries(LocalStateGetters).map(([key, getter]) => {
@@ -125,7 +146,15 @@ export function getLocalAppState() {
     }),
   ) as AppState;
 
+  console.log(appState[StoreKey.Chat]);
   return appState;
+}
+
+export function setLocalAppStateFromeString(state: string) {
+  const appState = JSON.parse(state) as AppState;
+  Object.entries(LocalStateSetters).forEach(([key, setter]) => {
+    setter(appState[key as keyof AppState]);
+  });
 }
 
 export function setLocalAppState(appState: AppState) {

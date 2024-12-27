@@ -22,6 +22,8 @@ import { createPersistStore } from "../utils/store";
 import { ensure } from "../utils/clone";
 import { DEFAULT_CONFIG } from "./config";
 import { getModelProvider } from "../utils/model";
+import { getServerSideConfig } from "../config/server";
+const serverConfig = getServerSideConfig();
 
 let fetchState = 0; // 0 not fetch, 1 fetching, 2 done
 
@@ -58,8 +60,12 @@ const DEFAULT_ACCESS_STATE = {
   provider: ServiceProvider.OpenAI,
 
   // openai
-  openaiUrl: DEFAULT_OPENAI_URL,
-  openaiApiKey: "",
+  //openaiUrl: DEFAULT_OPENAI_URL,
+  //openaiApiKey: "",
+  //openaiUrl: "https://cloud.fastgpt.cn/api",
+  //openaiApiKey: "fastgpt-lWMBRlqupoaxRlS0jJ6eWvwRQyVFDQNfSrdPlskirO9KbHlfgwjprb5",
+  openaiUrl: serverConfig?.baseUrl ?? DEFAULT_OPENAI_URL,
+  openaiApiKey: serverConfig?.apiKey ?? "",
 
   // azure
   azureUrl: "",
@@ -128,6 +134,10 @@ const DEFAULT_ACCESS_STATE = {
   // tts config
   edgeTTSVoiceName: "zh-CN-YunxiNeural",
 };
+
+export function getDefaultAccessState() {
+  return DEFAULT_ACCESS_STATE;
+}
 
 export const useAccessStore = createPersistStore(
   { ...DEFAULT_ACCESS_STATE },

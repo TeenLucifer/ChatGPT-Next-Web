@@ -195,6 +195,10 @@ const DEFAULT_CHAT_STATE = {
   lastInput: "",
 };
 
+export function getDefaultChatState() {
+  return DEFAULT_CHAT_STATE;
+}
+
 export const useChatStore = createPersistStore(
   DEFAULT_CHAT_STATE,
   (set, _get) => {

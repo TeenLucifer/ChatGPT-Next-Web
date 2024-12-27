@@ -46,7 +46,8 @@ export const DEFAULT_CONFIG = {
   fontSize: 14,
   fontFamily: "",
   theme: Theme.Auto as Theme,
-  tightBorder: !!config?.isApp,
+  //tightBorder: !!config?.isApp,
+  tightBorder: true,
   sendPreviewBubble: true,
   enableAutoGenerateTitle: true,
   sidebarWidth: DEFAULT_SIDEBAR_WIDTH,
@@ -123,6 +124,10 @@ export function limitNumber(
   }
 
   return Math.min(max, Math.max(min, x));
+}
+
+export function getDefaultAppConfig() {
+  return DEFAULT_CONFIG;
 }
 
 export const TTSConfigValidator = {
