@@ -86,6 +86,10 @@ const Signup = dynamic(async () => (await import("./signup")).SignupPage, {
   loading: () => <Loading noLogo />,
 });
 
+const Index = dynamic(async () => (await import("./index")).IndexPage, {
+  loading: () => <Loading noLogo />,
+});
+
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -216,7 +220,7 @@ function Screen() {
         )}
         <WindowContent isHome={isHome} isLogin={isLogin} isSignup={isSignup}>
           <Routes>
-            <Route path={Path.Home} element={<Login />} />
+            <Route path={Path.Home} element={<Index />} />
             <Route path={Path.NewChat} element={<NewChat />} />
             <Route path={Path.Masks} element={<MaskPage />} />
             <Route path={Path.Plugins} element={<PluginPage />} />

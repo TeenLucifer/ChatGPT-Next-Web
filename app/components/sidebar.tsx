@@ -278,7 +278,7 @@ export function SideBar(props: { className?: string }) {
       <SideBarBody
         onClick={(e) => {
           if (e.target === e.currentTarget) {
-            navigate(Path.Home);
+            navigate(Path.Chat);
           }
         }}
       >

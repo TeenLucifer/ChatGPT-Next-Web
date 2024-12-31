@@ -12,12 +12,8 @@ import clsx from "clsx";
 
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Input, Flex, Button, Checkbox, message } from "antd";
-import {
-  LeanCloudUserLogin,
-  LeanCloudCheckUser,
-  LeanCloudQueryUserStateFieldData,
-} from "../utils/cloud/leancloud";
-import { setLocalAppStateFromeString } from "../utils/sync";
+import { LeanCloudUserLogin } from "../utils/cloud/leancloud";
+import { getUserId, syncRemoteAppState } from "../utils/user-management";
 
 const storage = safeLocalStorage();
 
@@ -30,51 +26,6 @@ function storeUserId(user_id: any) {
   localStorage.setItem("user_id", user_id);
   localStorage.setItem("user_id_expiraion", expirationTime.toString());
 }
-
-// TODO(wangjintao): getUserId/syncRemoteAppState/updateRemoteAppState三个函数应该属于全局通用, 找个合适的地方放
-
-// 从本地存储获取user_id并校验当前用户是否过期, 过期或没有返回null, 否则返回user_id
-async function getUserId() {
-  const id = localStorage.getItem("user_id");
-  const expirationTimeStr = localStorage.getItem("user_id_expiration");
-  const expirationTime = expirationTimeStr
-    ? parseInt(expirationTimeStr, 10)
-    : null;
-  const now = new Date().getTime();
-  let user_id = "";
-  let user_vlaid = false;
-  if (!id) {
-    return null;
-  } else {
-    user_id = id;
-  }
-  // 云端查询该用户是否有效
-  user_vlaid = await LeanCloudCheckUser(user_id);
-  if (false === user_vlaid) {
-    return null;
-  }
-
-  if (expirationTime && now > expirationTime) {
-    localStorage.removeItem("user_id");
-    localStorage.removeItem("user_id_expiration");
-    return null;
-  }
-
-  return user_id;
-}
-
-async function syncRemoteAppState(user_id: string): Promise<void> {
-  const query_ret = await LeanCloudQueryUserStateFieldData(
-    user_id,
-    "app_state",
-  );
-  if (query_ret && typeof query_ret === "string") {
-    setLocalAppStateFromeString(query_ret);
-  }
-}
-
-// TODO(wangjintao): 更新云端的配置
-async function updateRemoteAppState(user_id: string) {}
 
 async function logIn(account: any, password: any, navigate: any) {
   // 调用后台登录接口

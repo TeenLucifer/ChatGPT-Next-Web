@@ -1,0 +1,56 @@
+.index-page {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  overflow: auto;
+
+  .index-navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    min-width: 100%;
+    min-height: 8%;
+    border: 1px solid #000000;
+  }
+  .index-navbar-button {
+    min-height: 6%;
+    min-width: 6%;
+    font-size: 16px;   
+  }
+
+  .index-header {
+    font-size: 16px;
+    font-weight: bold;
+    line-height: 2;
+  }
+
+  .index-title {
+    font-size: 70px;
+    font-weight: bold;
+    line-height: 2;
+  }
+
+  .index-description {
+    font-size: 16px;
+    line-height: 2;
+    max-width: 50%;
+    text-align: center;
+  }
+
+  .index-start-button {
+    margin-top: 5vh;
+    background-color: var(--primary);
+    color: white;
+    min-height: 6%;
+    min-width: 10%;
+    font-size: 16px;
+  }
+
+  .index-image-cover {
+    max-width: 70%;
+    height: auto;
+  }
+}
