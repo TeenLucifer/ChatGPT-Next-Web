@@ -86,6 +86,8 @@ import { useMaskStore } from "../store/mask";
 import { ProviderType } from "../utils/cloud";
 import { TTSConfigList } from "./tts-config";
 import { RealtimeConfigList } from "./realtime-chat/realtime-config";
+import { getUserId } from "../utils/user-management";
+import { message } from "antd";
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -669,6 +671,21 @@ export function Settings() {
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    // 每个功能页面都需要检查用户是否登录
+    const checkUser = async () => {
+      // 查询本地存储的用户id是否有效
+      const user_id = await getUserId();
+      // 查询到该id有效用户
+      if (!user_id) {
+        // 未查询到有效用户就跳转到登录页面
+        message.warning("未登录");
+        navigate(Path.Login);
+      }
+    };
+    checkUser();
+  }, [navigate]);
 
   const clientConfig = useMemo(() => getClientConfig(), []);
   const showAccessCode = enabledAccessControl && !clientConfig?.isApp;

@@ -9,6 +9,8 @@ import Locale from "../locales";
 import { Path } from "../constant";
 
 import { useChatStore } from "../store";
+import { getUserId } from "../utils/user-management";
+import { message } from "antd";
 
 type Item = {
   id: number;
@@ -68,6 +70,18 @@ export function SearchChatPage() {
   }, []);
 
   useEffect(() => {
+    // 每个功能页面都需要检查用户是否登录
+    const checkUser = async () => {
+      // 查询本地存储的用户id是否有效
+      const user_id = await getUserId();
+      // 查询到该id有效用户
+      if (!user_id) {
+        // 未查询到有效用户就跳转到登录页面
+        message.warning("未登录");
+        navigate(Path.Login);
+      }
+    };
+
     const intervalId = setInterval(() => {
       if (searchInputRef.current) {
         const currentValue = searchInputRef.current.value;
@@ -81,6 +95,7 @@ export function SearchChatPage() {
       }
     }, 1000);
 
+    checkUser();
     // Cleanup the interval on component unmount
     return () => clearInterval(intervalId);
   }, [doSearch]);

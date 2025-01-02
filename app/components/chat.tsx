@@ -123,6 +123,8 @@ import { isEmpty } from "lodash-es";
 import { getModelProvider } from "../utils/model";
 import { RealtimeChat } from "@/app/components/realtime-chat";
 import clsx from "clsx";
+import { getUserId } from "../utils/user-management";
+import { message } from "antd";
 
 const localStorage = safeLocalStorage();
 
@@ -2087,5 +2089,21 @@ function _Chat() {
 export function Chat() {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
+  const navigate = useNavigate();
+  useEffect(() => {
+    // 每个功能页面都需要检查用户是否登录
+    const checkUser = async () => {
+      // 查询本地存储的用户id是否有效
+      const user_id = await getUserId();
+      // 查询到该id有效用户
+      if (!user_id) {
+        // 未查询到有效用户就跳转到登录页面
+        message.warning("未登录");
+        navigate(Path.Login);
+      }
+    };
+    checkUser();
+  }, [navigate]);
+
   return <_Chat key={session.id}></_Chat>;
 }

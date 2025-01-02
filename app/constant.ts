@@ -51,6 +51,33 @@ export enum Path {
   SearchChat = "/search-chat",
 }
 
+// 用于存储用户管理功能的字段名
+export const user_field = {
+  // 登录后本地授权时存储的字段名
+  local_auth: {
+    id: "user_id",
+    expiration: "user_id_expiration",
+  },
+  member_level: {
+    normal: "normal",
+    vip: "vip",
+  },
+  lean_cloud: {
+    APP_ID: "iPOB9VxpJ8dgbHFZocETK3cK-gzGzoHsz",
+    APP_KEY: "w5hjIOJif6Z1MgdQL3k7dKE9",
+    MASTER_KEY: "6youNsnDn0eiex3iQiEV3HUV",
+    SERVER_URL: "https://ipob9vxp.lc-cn-n1-shared.com",
+
+    user_state_table: {
+      table_name: "UserState",
+      account: "account",
+      id: "user_id",
+      state: "app_state",
+      member: "ember",
+    },
+  },
+};
+
 export enum ApiPath {
   Cors = "",
   Azure = "/api/azure",

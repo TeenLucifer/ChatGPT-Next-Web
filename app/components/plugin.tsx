@@ -29,6 +29,10 @@ import Locale from "../locales";
 import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import clsx from "clsx";
+import { message } from "antd";
+import { Path } from "../constant";
+import { useEffect } from "react";
+import { getUserId } from "../utils/user-management";
 
 export function PluginPage() {
   const navigate = useNavigate();
@@ -115,6 +119,21 @@ export function PluginPage() {
       .catch((e) => {
         showToast(Locale.Plugin.EditModal.Error);
       });
+
+  useEffect(() => {
+    // 每个功能页面都需要检查用户是否登录
+    const checkUser = async () => {
+      // 查询本地存储的用户id是否有效
+      const user_id = await getUserId();
+      // 查询到该id有效用户
+      if (!user_id) {
+        // 未查询到有效用户就跳转到登录页面
+        message.warning("未登录");
+        navigate(Path.Login);
+      }
+    };
+    checkUser();
+  }, [navigate]);
 
   return (
     <ErrorBoundary>

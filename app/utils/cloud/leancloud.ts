@@ -1,16 +1,61 @@
 import AV from "leancloud-storage";
-
-const APP_ID = "iPOB9VxpJ8dgbHFZocETK3cK-gzGzoHsz";
-const APP_KEY = "w5hjIOJif6Z1MgdQL3k7dKE9";
-const MASTER_KEY = "6youNsnDn0eiex3iQiEV3HUV";
-const SERVER_URL = "https://ipob9vxp.lc-cn-n1-shared.com";
+import { user_field } from "@/app/constant";
 
 AV.init({
-  appId: APP_ID,
-  appKey: APP_KEY,
-  masterKey: MASTER_KEY,
-  serverURL: SERVER_URL,
+  appId: user_field.lean_cloud.APP_ID,
+  appKey: user_field.lean_cloud.APP_KEY,
+  masterKey: user_field.lean_cloud.MASTER_KEY,
+  serverURL: user_field.lean_cloud.SERVER_URL,
 });
+
+// 在user_id用户的table表下设置field对应字段的数据
+export async function LeanCloudSetTable(
+  user_id: string,
+  table: string,
+  field: string,
+  data: string,
+) {
+  const user_state_table = new AV.Query(table);
+  user_state_table.equalTo(user_field.lean_cloud.user_state_table.id, user_id);
+  return user_state_table.first().then(function (cur_user_state) {
+    if (cur_user_state) {
+      return cur_user_state.set(field, data);
+    }
+  });
+  return null;
+}
+
+// 在user_id用户的table表下查field对应字段的数据
+export async function LeanCloudQueryTable(
+  user_id: string,
+  table: string,
+  field: string,
+) {
+  // 在table表下查field对应字段的数据
+  const user_state_table = new AV.Query(table);
+  user_state_table.equalTo(user_field.lean_cloud.user_state_table.id, user_id);
+  return user_state_table.first().then(function (cur_user_state) {
+    if (cur_user_state) {
+      return cur_user_state.get(field);
+    }
+  });
+  return null;
+}
+
+export async function LeanCloudSetUserStateFieldData(
+  user_id: string,
+  field: string,
+  data: string,
+) {
+  const user_state_table = new AV.Query("UserState");
+  user_state_table.equalTo(user_field.lean_cloud.user_state_table.id, user_id);
+  return user_state_table.first().then(function (cur_user_state) {
+    if (cur_user_state) {
+      return cur_user_state.set(field, data);
+    }
+  });
+  return null;
+}
 
 // 根据user_id查询用户是否存在
 export async function LeanCloudCheckUser(user_id: string) {
@@ -86,30 +131,44 @@ export async function LeanCloudUserSignup(
   default_app_state: string,
 ) {
   const user = new AV.User();
-  const UserConfigObj = AV.Object.extend("UserState"); // 这里相当于在LeanCloud的数据库新建了一张名为UserState的表
-
-  user.setUsername(account);
-  user.setPassword(passwd);
-  user.set("gender", "secret");
+  // 这里在LeanCloud的数据库新建了一张名为UserState的表
+  const UserStateObj = AV.Object.extend(
+    user_field.lean_cloud.user_state_table.table_name,
+  );
   let ret_message: string = "注册失败";
   let signup_response = {
     status: "failed",
     user_id: "",
     message: ret_message,
   };
+  user.setUsername(account);
+  user.setPassword(passwd);
+  user.set("gender", "secret");
 
   try {
     await user.signUp();
 
     // 注册成功的用户初始配置
-    const user_init_cfg = new UserConfigObj();
-    user_init_cfg.set("account", account);
-    user_init_cfg.set("user_id", user.getObjectId());
-    user_init_cfg.set("app_state", default_app_state);
-    user_init_cfg.set("member", "normal");
+    const user_init_state = new UserStateObj();
+    user_init_state.set(
+      user_field.lean_cloud.user_state_table.account,
+      account,
+    );
+    user_init_state.set(
+      user_field.lean_cloud.user_state_table.id,
+      user.getObjectId(),
+    );
+    user_init_state.set(
+      user_field.lean_cloud.user_state_table.state,
+      default_app_state,
+    );
+    user_init_state.set(
+      user_field.lean_cloud.user_state_table.member,
+      user_field.member_level,
+    );
     try {
       // 用户的初始配置保存成功才算注册成功
-      await user_init_cfg.save();
+      await user_init_state.save();
       signup_response = {
         status: "success",
         user_id: user.getObjectId(),

@@ -17,6 +17,8 @@ import { useCommand } from "../command";
 import { showConfirm } from "./ui-lib";
 import { BUILTIN_MASK_STORE } from "../masks";
 import clsx from "clsx";
+import { message } from "antd";
+import { getUserId } from "../utils/user-management";
 
 function MaskItem(props: { mask: Mask; onClick?: () => void }) {
   return (
@@ -107,11 +109,24 @@ export function NewChat() {
   });
 
   useEffect(() => {
+    // 每个功能页面都需要检查用户是否登录
+    const checkUser = async () => {
+      // 查询本地存储的用户id是否有效
+      const user_id = await getUserId();
+      // 查询到该id有效用户
+      if (!user_id) {
+        // 未查询到有效用户就跳转到登录页面
+        message.warning("未登录");
+        navigate(Path.Login);
+      }
+    };
+    checkUser();
+
     if (maskRef.current) {
       maskRef.current.scrollLeft =
         (maskRef.current.scrollWidth - maskRef.current.clientWidth) / 2;
     }
-  }, [groups]);
+  }, [groups, navigate]);
 
   return (
     <div className={styles["new-chat"]}>

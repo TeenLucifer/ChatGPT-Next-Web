@@ -56,6 +56,9 @@ import {
 } from "@hello-pangea/dnd";
 import { getMessageTextContent } from "../utils";
 import clsx from "clsx";
+import { useEffect } from "react";
+import { message } from "antd";
+import { getUserId } from "../utils/user-management";
 
 // drag and drop helper function
 function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
@@ -496,6 +499,21 @@ export function MaskPage() {
       } catch {}
     });
   };
+
+  useEffect(() => {
+    // 每个功能页面都需要检查用户是否登录
+    const checkUser = async () => {
+      // 查询本地存储的用户id是否有效
+      const user_id = await getUserId();
+      // 查询到该id有效用户
+      if (!user_id) {
+        // 未查询到有效用户就跳转到登录页面
+        message.warning("未登录");
+        navigate(Path.Login);
+      }
+    };
+    checkUser();
+  }, [navigate]);
 
   return (
     <ErrorBoundary>
