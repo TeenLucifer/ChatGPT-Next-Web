@@ -18,7 +18,7 @@ import { showConfirm } from "./ui-lib";
 import { BUILTIN_MASK_STORE } from "../masks";
 import clsx from "clsx";
 import { message } from "antd";
-import { getUserId } from "../utils/user-management";
+import { getUserId, updateUserRemoteState } from "../utils/user-management";
 
 function MaskItem(props: { mask: Mask; onClick?: () => void }) {
   return (
@@ -126,6 +126,12 @@ export function NewChat() {
       maskRef.current.scrollLeft =
         (maskRef.current.scrollWidth - maskRef.current.clientWidth) / 2;
     }
+
+    // 窗口刷新或关闭时更新用户状态
+    window.addEventListener("beforeunload", updateUserRemoteState);
+    return () => {
+      window.removeEventListener("beforeunload", updateUserRemoteState);
+    };
   }, [groups, navigate]);
 
   return (

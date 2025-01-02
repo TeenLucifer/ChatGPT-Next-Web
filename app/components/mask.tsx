@@ -58,7 +58,7 @@ import { getMessageTextContent } from "../utils";
 import clsx from "clsx";
 import { useEffect } from "react";
 import { message } from "antd";
-import { getUserId } from "../utils/user-management";
+import { getUserId, updateUserRemoteState } from "../utils/user-management";
 
 // drag and drop helper function
 function reorder<T>(list: T[], startIndex: number, endIndex: number): T[] {
@@ -513,6 +513,11 @@ export function MaskPage() {
       }
     };
     checkUser();
+    // 窗口刷新或关闭时更新用户状态
+    window.addEventListener("beforeunload", updateUserRemoteState);
+    return () => {
+      window.removeEventListener("beforeunload", updateUserRemoteState);
+    };
   }, [navigate]);
 
   return (

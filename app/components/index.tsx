@@ -1,11 +1,25 @@
 import styles from "./index.module.scss";
-import { useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { ArrowRightOutlined } from "@ant-design/icons";
-import BotIcon from "../icons/bot.svg";
 import { IconButton } from "./button";
 import { Path } from "../constant";
 import { getUserId, syncRemoteAppState } from "../utils/user-management";
+import type { MenuProps } from "antd";
+import { Menu } from "antd";
+
+type MenuItem = Required<MenuProps>["items"][number];
+
+const items: MenuItem[] = [
+  {
+    label: <Link to={Path.Login}>价格</Link>,
+    key: "pricing",
+  },
+  {
+    label: <Link to={Path.Login}>联系我们</Link>,
+    key: "contect",
+  },
+];
 
 async function goFunctionalPage(navigate: any) {
   // 查询本地存储的用户id是否有效
@@ -26,18 +40,20 @@ export function IndexPage() {
 
   useEffect(() => {}, []);
 
+  const [current, setCurrent] = useState("pricing");
+  const onClick = (e: any) => {
+    setCurrent(e.key);
+  };
+
   return (
     <div className={styles["index-page"]}>
-      <div className={styles["index-navbar"]}>
-        <BotIcon />
-        <IconButton
-          text={"开始使用"}
-          className={styles["index-navbar-button"]}
-          onClick={() => goFunctionalPage(navigate)}
-        />
-      </div>
-
-      <div className={styles["index-header"]}>用AI构建的论文专属知识库</div>
+      <Menu
+        className={styles["index-topbar"]}
+        onClick={onClick}
+        selectedKeys={[]}
+        mode="horizontal"
+        items={items}
+      />
 
       <div className={styles["index-title"]}>让AI更懂你的论文</div>
 

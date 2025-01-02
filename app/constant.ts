@@ -73,7 +73,7 @@ export const user_field = {
       account: "account",
       id: "user_id",
       state: "app_state",
-      member: "ember",
+      member: "member",
     },
   },
 };

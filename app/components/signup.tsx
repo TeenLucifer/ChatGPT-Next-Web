@@ -110,48 +110,50 @@ export function SignupPage() {
 
       <div className={styles["signup-title"]}>{Locale.Signup.Title}</div>
 
-      <Form
-        name="login"
-        initialValues={{ remember: true }}
-        onFinish={(values) => onSignupFinish(values, navigate)}
-        labelAlign="left"
-        className={styles["signup-form"]}
-      >
-        <Form.Item
-          name="account"
-          rules={[{ required: true, validator: validateAccount }]}
+      <div className={styles["signup-formborder"]}>
+        <Form
+          name="login"
+          initialValues={{ remember: true }}
+          onFinish={(values) => onSignupFinish(values, navigate)}
+          labelAlign="left"
+          className={styles["signup-form"]}
         >
-          <Input prefix={<UserOutlined />} placeholder="手机号/邮箱" />
-        </Form.Item>
+          <Form.Item
+            name="account"
+            rules={[{ required: true, validator: validateAccount }]}
+          >
+            <Input prefix={<UserOutlined />} placeholder="手机号/邮箱" />
+          </Form.Item>
 
-        <Form.Item
-          name="password"
-          rules={[{ required: true, validator: validatePassword }]}
-        >
-          <Input.Password prefix={<LockOutlined />} placeholder="输入密码" />
-        </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, validator: validatePassword }]}
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="输入密码" />
+          </Form.Item>
 
-        <Form.Item
-          name="password-confirm"
-          dependencies={["password"]}
-          rules={[
-            { required: true, message: "需要再次输入密码确认!" },
-            validateConfirmPassword,
-          ]}
-        >
-          <Input.Password prefix={<LockOutlined />} placeholder="确认密码 " />
-        </Form.Item>
+          <Form.Item
+            name="password-confirm"
+            dependencies={["password"]}
+            rules={[
+              { required: true, message: "需要再次输入密码确认!" },
+              validateConfirmPassword,
+            ]}
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="确认密码 " />
+          </Form.Item>
 
-        <Form.Item className={styles["signup-gologin"]}>
-          <Link to={Path.Login}>已有账号, 去登录</Link>
-        </Form.Item>
+          <Form.Item className={styles["signup-gologin"]}>
+            <Link to={Path.Login}>已有账号, 去登录</Link>
+          </Form.Item>
 
-        <Form.Item>
-          <Button block type="primary" htmlType="submit">
-            确认注册
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item>
+            <Button block type="primary" htmlType="submit">
+              确认注册
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 }

@@ -7,6 +7,12 @@
   flex-direction: column;
   overflow: auto;
 
+  .index-topbar {
+    position: fixed;
+    justify-content: flex-end;
+    min-width: 100%;
+    min-height: 6%;
+  }
   .index-navbar {
     display: flex;
     justify-content: space-between;
@@ -28,6 +34,7 @@
   }
 
   .index-title {
+    margin-top: 8vh;
     font-size: 70px;
     font-weight: bold;
     line-height: 2;

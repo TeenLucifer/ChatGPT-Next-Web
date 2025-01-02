@@ -81,6 +81,10 @@ const validatePassword = (_: any, value: any) => {
   }
 };
 
+function onClosePage() {
+  console.log("page closed");
+}
+
 export function LoginPage() {
   const navigate = useNavigate();
   const accessStore = useAccessStore();
@@ -100,6 +104,12 @@ export function LoginPage() {
 
     // 页面加载时校验用户登录是否有效，如果已经有效就直接跳转到功能页面, 无需登录
     checkUser();
+
+    // 监听页面刷新和关闭事件, 触发时执行用户配置保存至云端
+    //window.addEventListener("beforeunload", onClosePage);
+    //return () => {
+    //  window.removeEventListener("beforeunload", onClosePage);
+    //}
   }, [navigate]);
 
   return (
@@ -118,45 +128,47 @@ export function LoginPage() {
 
       <div className={styles["login-title"]}>{Locale.Login.Title}</div>
 
-      <Form
-        name="login"
-        initialValues={{ remember: true }}
-        onFinish={(values) => onLoginFinish(values, navigate)}
-        className={styles["login-form"]}
-      >
-        <Form.Item
-          name="account"
-          rules={[{ required: true, validator: validateAccount }]}
+      <div className={styles["login-formborder"]}>
+        <Form
+          name="login"
+          initialValues={{ remember: true }}
+          onFinish={(values) => onLoginFinish(values, navigate)}
+          className={styles["login-form"]}
         >
-          <Input prefix={<UserOutlined />} placeholder="账号/手机号/邮箱" />
-        </Form.Item>
+          <Form.Item
+            name="account"
+            rules={[{ required: true, validator: validateAccount }]}
+          >
+            <Input prefix={<UserOutlined />} placeholder="账号/手机号/邮箱" />
+          </Form.Item>
 
-        <Form.Item
-          name="password"
-          rules={[{ required: true, validator: validatePassword }]}
-        >
-          <Input.Password prefix={<LockOutlined />} placeholder="密码" />
-        </Form.Item>
+          <Form.Item
+            name="password"
+            rules={[{ required: true, validator: validatePassword }]}
+          >
+            <Input.Password prefix={<LockOutlined />} placeholder="密码" />
+          </Form.Item>
 
-        <Form.Item>
-          <Flex justify="space-between" align="center">
-            <Form.Item name="remember" valuePropName="checked" noStyle>
-              <Checkbox>记住我</Checkbox>
-            </Form.Item>
-            <div>
-              <Link to={Path.Signup}>忘记密码?</Link>
-              <span className={styles["login-separator"]}>|</span>
-              <Link to={Path.Signup}>注册账号</Link>
-            </div>
-          </Flex>
-        </Form.Item>
+          <Form.Item>
+            <Flex justify="space-between" align="center">
+              <Form.Item name="remember" valuePropName="checked" noStyle>
+                <Checkbox>记住我</Checkbox>
+              </Form.Item>
+              <div>
+                <Link to={Path.Signup}>忘记密码?</Link>
+                <span className={styles["login-separator"]}>|</span>
+                <Link to={Path.Signup}>注册账号</Link>
+              </div>
+            </Flex>
+          </Form.Item>
 
-        <Form.Item>
-          <Button block type="primary" htmlType="submit">
-            登录
-          </Button>
-        </Form.Item>
-      </Form>
+          <Form.Item>
+            <Button block type="primary" htmlType="submit">
+              登录
+            </Button>
+          </Form.Item>
+        </Form>
+      </div>
     </div>
   );
 }

@@ -146,11 +146,10 @@ export function getLocalAppState() {
     }),
   ) as AppState;
 
-  console.log(appState[StoreKey.Chat]);
   return appState;
 }
 
-export function setLocalAppStateFromeString(state: string) {
+export function setLocalAppStateFromString(state: string) {
   const appState = JSON.parse(state) as AppState;
   Object.entries(LocalStateSetters).forEach(([key, setter]) => {
     setter(appState[key as keyof AppState]);

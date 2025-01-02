@@ -123,7 +123,7 @@ import { isEmpty } from "lodash-es";
 import { getModelProvider } from "../utils/model";
 import { RealtimeChat } from "@/app/components/realtime-chat";
 import clsx from "clsx";
-import { getUserId } from "../utils/user-management";
+import { getUserId, updateUserRemoteState } from "../utils/user-management";
 import { message } from "antd";
 
 const localStorage = safeLocalStorage();
@@ -2086,6 +2086,10 @@ function _Chat() {
   );
 }
 
+function onBeforeUnload() {
+  console.log("[Chat] onBeforeUnload");
+}
+
 export function Chat() {
   const chatStore = useChatStore();
   const session = chatStore.currentSession();
@@ -2103,6 +2107,11 @@ export function Chat() {
       }
     };
     checkUser();
+    // 窗口刷新或关闭时更新用户状态
+    window.addEventListener("beforeunload", updateUserRemoteState);
+    return () => {
+      window.removeEventListener("beforeunload", updateUserRemoteState);
+    };
   }, [navigate]);
 
   return <_Chat key={session.id}></_Chat>;

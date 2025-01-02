@@ -32,7 +32,7 @@ import clsx from "clsx";
 import { message } from "antd";
 import { Path } from "../constant";
 import { useEffect } from "react";
-import { getUserId } from "../utils/user-management";
+import { getUserId, updateUserRemoteState } from "../utils/user-management";
 
 export function PluginPage() {
   const navigate = useNavigate();
@@ -133,6 +133,11 @@ export function PluginPage() {
       }
     };
     checkUser();
+    // 窗口刷新或关闭时更新用户状态
+    window.addEventListener("beforeunload", updateUserRemoteState);
+    return () => {
+      window.removeEventListener("beforeunload", updateUserRemoteState);
+    };
   }, [navigate]);
 
   return (

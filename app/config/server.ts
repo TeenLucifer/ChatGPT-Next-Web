@@ -129,7 +129,9 @@ export const getServerSideConfig = () => {
     if (customModels) customModels += ",";
     customModels += DEFAULT_MODELS.filter(
       (m) =>
-        (m.name.startsWith("gpt-4") || m.name.startsWith("chatgpt-4o") || m.name.startsWith("o1")) &&
+        (m.name.startsWith("gpt-4") ||
+          m.name.startsWith("chatgpt-4o") ||
+          m.name.startsWith("o1")) &&
         !m.name.startsWith("gpt-4o-mini"),
     )
       .map((m) => "-" + m.name)
@@ -170,8 +172,11 @@ export const getServerSideConfig = () => {
   ).split(",");
 
   return {
-    baseUrl: process.env.BASE_URL,
-    apiKey: getApiKey(process.env.OPENAI_API_KEY),
+    //baseUrl: process.env.BASE_URL,
+    //apiKey: getApiKey(process.env.OPENAI_API_KEY),
+    //openaiOrgId: process.env.OPENAI_ORG_ID,
+    baseUrl: "https://cloud.fastgpt.cn/api",
+    apiKey: "fastgpt-lWMBRlqupoaxRlS0jJ6eWvwRQyVFDQNfSrdPlskirO9KbHlfgwjprb5",
     openaiOrgId: process.env.OPENAI_ORG_ID,
 
     isStability,

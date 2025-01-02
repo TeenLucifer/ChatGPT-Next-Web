@@ -9,8 +9,8 @@ import Locale from "../locales";
 import { Path } from "../constant";
 
 import { useChatStore } from "../store";
-import { getUserId } from "../utils/user-management";
 import { message } from "antd";
+import { getUserId, updateUserRemoteState } from "../utils/user-management";
 
 type Item = {
   id: number;
@@ -96,8 +96,14 @@ export function SearchChatPage() {
     }, 1000);
 
     checkUser();
+
+    // 窗口刷新或关闭时更新用户状态
     // Cleanup the interval on component unmount
-    return () => clearInterval(intervalId);
+    window.addEventListener("beforeunload", updateUserRemoteState);
+    return () => {
+      clearInterval(intervalId);
+      window.removeEventListener("beforeunload", updateUserRemoteState);
+    };
   }, [doSearch]);
 
   return (

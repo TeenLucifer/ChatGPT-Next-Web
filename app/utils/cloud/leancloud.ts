@@ -51,10 +51,10 @@ export async function LeanCloudSetUserStateFieldData(
   user_state_table.equalTo(user_field.lean_cloud.user_state_table.id, user_id);
   return user_state_table.first().then(function (cur_user_state) {
     if (cur_user_state) {
-      return cur_user_state.set(field, data);
+      cur_user_state.set(field, data);
+      cur_user_state.save();
     }
   });
-  return null;
 }
 
 // 根据user_id查询用户是否存在
@@ -164,7 +164,7 @@ export async function LeanCloudUserSignup(
     );
     user_init_state.set(
       user_field.lean_cloud.user_state_table.member,
-      user_field.member_level,
+      user_field.member_level.normal,
     );
     try {
       // 用户的初始配置保存成功才算注册成功

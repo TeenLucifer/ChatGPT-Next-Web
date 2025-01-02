@@ -1,4 +1,4 @@
-import { setLocalAppStateFromeString, getLocalAppState } from "../utils/sync";
+import { setLocalAppStateFromString, getLocalAppState } from "../utils/sync";
 import {
   LeanCloudCheckUser,
   LeanCloudQueryUserStateFieldData,
@@ -6,10 +6,11 @@ import {
 } from "../utils/cloud/leancloud";
 import { user_field } from "../constant";
 
-export function userLogout() {
-  const now = new Date().getTime();
+export async function userLogout() {
+  await updateUserRemoteState();
   localStorage.removeItem(user_field.local_auth.id);
   localStorage.removeItem(user_field.local_auth.expiration);
+  window.location.reload(); // 刷新页面
 }
 
 // 从本地存储获取user_id并校验当前用户是否过期, 过期或没有返回null, 否则返回user_id
@@ -50,7 +51,7 @@ export async function syncRemoteAppState(user_id: string): Promise<void> {
     user_field.lean_cloud.user_state_table.state,
   );
   if (query_ret && typeof query_ret === "string") {
-    setLocalAppStateFromeString(query_ret);
+    setLocalAppStateFromString(query_ret);
   }
 }
 
@@ -60,9 +61,24 @@ export async function updateRemoteAppState(user_id: string) {
   // TODO(wangjintao): 设计登出按键, 在登出时调用状态同步
   const local_state = getLocalAppState();
   const local_state_str = JSON.stringify(local_state);
-  await LeanCloudSetUserStateFieldData(
+
+  const ret = await LeanCloudSetUserStateFieldData(
     user_id,
-    user_field.lean_cloud.user_state_table.id,
+    user_field.lean_cloud.user_state_table.state,
     local_state_str,
   );
+}
+
+export async function updateUserRemoteState() {
+  const user_id = await getUserId();
+  const local_state = getLocalAppState();
+  const local_state_str = JSON.stringify(local_state);
+
+  if (user_id) {
+    await LeanCloudSetUserStateFieldData(
+      user_id,
+      user_field.lean_cloud.user_state_table.state,
+      local_state_str,
+    );
+  }
 }

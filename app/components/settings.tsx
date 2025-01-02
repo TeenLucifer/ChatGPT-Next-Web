@@ -86,8 +86,8 @@ import { useMaskStore } from "../store/mask";
 import { ProviderType } from "../utils/cloud";
 import { TTSConfigList } from "./tts-config";
 import { RealtimeConfigList } from "./realtime-chat/realtime-config";
-import { getUserId } from "../utils/user-management";
 import { message } from "antd";
+import { getUserId, updateUserRemoteState } from "../utils/user-management";
 
 function EditPromptModal(props: { id: string; onClose: () => void }) {
   const promptStore = usePromptStore();
@@ -685,6 +685,11 @@ export function Settings() {
       }
     };
     checkUser();
+    // 窗口刷新或关闭时更新用户状态
+    window.addEventListener("beforeunload", updateUserRemoteState);
+    return () => {
+      window.removeEventListener("beforeunload", updateUserRemoteState);
+    };
   }, [navigate]);
 
   const clientConfig = useMemo(() => getClientConfig(), []);
