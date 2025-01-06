@@ -26,7 +26,7 @@ async function YungouRequestWxPayQrcode(fee: string) {
   const biz_params = "";
   const payKey = YUNGOU.YUNGOUOS_KEY;
 
-  await WxPay.nativePay(
+  WxPay.nativePay(
     out_trade_no,
     total_fee,
     mch_id,
