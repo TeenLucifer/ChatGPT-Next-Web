@@ -210,3 +210,5 @@ export async function LeanCloudStoreUserConfig(
 ) {
   const user_config = AV.Object.extend("user_config");
 }
+
+// TODO(wangjintao): 需要暴露一个接口用于查询当前用户是否为有效期内的会员
