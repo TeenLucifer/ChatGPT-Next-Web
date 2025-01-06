@@ -104,13 +104,21 @@ export function SignupPage() {
         ></IconButton>
       </div>
 
-      <div className={styles["signup-logo"]}>
-        <BotIcon />
-      </div>
-
-      <div className={styles["signup-title"]}>{Locale.Signup.Title}</div>
-
       <div className={styles["signup-formborder"]}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "10vh",
+            marginBottom: "5vh",
+          }}
+        >
+          <div style={{ transform: "scale(1.4)" }}>
+            <BotIcon />
+          </div>
+          <div style={{ fontSize: "24px", marginLeft: "1vw" }}>账号注册</div>
+        </div>
         <Form
           name="login"
           initialValues={{ remember: true }}
@@ -122,14 +130,22 @@ export function SignupPage() {
             name="account"
             rules={[{ required: true, validator: validateAccount }]}
           >
-            <Input prefix={<UserOutlined />} placeholder="手机号/邮箱" />
+            <Input
+              prefix={<UserOutlined />}
+              placeholder="手机号/邮箱"
+              style={{ height: "5vh" }}
+            />
           </Form.Item>
 
           <Form.Item
             name="password"
             rules={[{ required: true, validator: validatePassword }]}
           >
-            <Input.Password prefix={<LockOutlined />} placeholder="输入密码" />
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="输入密码"
+              style={{ height: "5vh" }}
+            />
           </Form.Item>
 
           <Form.Item
@@ -140,7 +156,11 @@ export function SignupPage() {
               validateConfirmPassword,
             ]}
           >
-            <Input.Password prefix={<LockOutlined />} placeholder="确认密码 " />
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="确认密码 "
+              style={{ height: "5vh" }}
+            />
           </Form.Item>
 
           <Form.Item className={styles["signup-gologin"]}>
@@ -148,7 +168,12 @@ export function SignupPage() {
           </Form.Item>
 
           <Form.Item>
-            <Button block type="primary" htmlType="submit">
+            <Button
+              block
+              type="primary"
+              htmlType="submit"
+              style={{ height: "5vh" }}
+            >
               确认注册
             </Button>
           </Form.Item>

@@ -90,6 +90,10 @@ const Index = dynamic(async () => (await import("./index")).IndexPage, {
   loading: () => <Loading noLogo />,
 });
 
+const Pricing = dynamic(async () => (await import("./pricing")).PricingPage, {
+  loading: () => <Loading noLogo />,
+});
+
 export function useSwitchTheme() {
   const config = useAppConfig();
 
@@ -162,8 +166,9 @@ export function WindowContent(props: {
   isHome: boolean;
   isLogin: boolean;
   isSignup: boolean;
+  isPricing: boolean;
 }) {
-  if (props.isHome || props.isLogin || props.isSignup) {
+  if (props.isHome || props.isLogin || props.isSignup || props.isPricing) {
     return (
       <div className={styles["window-content-nosidebar"]} id={SlotID.AppBody}>
         {props?.children}
@@ -189,6 +194,7 @@ function Screen() {
   const isChat = location.pathname === Path.Chat;
   const isLogin = location.pathname === Path.Login;
   const isSignup = location.pathname === Path.Signup;
+  const isPricing = location.pathname === Path.Pricing;
 
   const isMobileScreen = useMobileScreen();
   const shouldTightBorder =
@@ -211,14 +217,19 @@ function Screen() {
     if (isSdNew) return <Sd />;
     return (
       <>
-        {!isLogin && !isSignup && !isHome && (
+        {!isLogin && !isSignup && !isHome && !isPricing && (
           <SideBar
             className={clsx({
               [styles["sidebar-show"]]: isChat,
             })}
           />
         )}
-        <WindowContent isHome={isHome} isLogin={isLogin} isSignup={isSignup}>
+        <WindowContent
+          isHome={isHome}
+          isLogin={isLogin}
+          isSignup={isSignup}
+          isPricing={isPricing}
+        >
           <Routes>
             <Route path={Path.Home} element={<Index />} />
             <Route path={Path.NewChat} element={<NewChat />} />
@@ -229,6 +240,7 @@ function Screen() {
             <Route path={Path.Settings} element={<Settings />} />
             <Route path={Path.Login} element={<Login />} />
             <Route path={Path.Signup} element={<Signup />} />
+            <Route path={Path.Pricing} element={<Pricing />} />
           </Routes>
         </WindowContent>
       </>

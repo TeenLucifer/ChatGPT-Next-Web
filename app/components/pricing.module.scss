@@ -1,0 +1,52 @@
+.pricing-page {
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+
+  .pricing-title {
+    margin-top: 3vh;
+    font-size: 64px;
+    font-weight: bold;
+    line-height: 2;
+  }
+
+  .pricing-header {
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 10px;
+    box-sizing: border-box;
+    animation: slide-in-from-top ease 0.3s;
+  }
+
+  .pricing-group {
+    margin-top: 5vh;
+    display: flex;
+    justify-content: space-between;
+    flex-direction: row;
+    min-width: 70%;
+    //border: 1px solid #dbe2e7;
+  }
+
+  .pricing-container {
+    border-radius: 10px;
+    padding: 20px;
+    min-width: 25%;
+    background-color: #ffffff;
+    border: 1px solid #dbe2e7;
+    display: flex;
+    justify-content: flex-start;
+    align-items: flex-start;
+    flex-direction: column;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* 添加阴影 */
+    transition: background-color 0.3s ease;
+  }
+  .pricing-container:hover {
+    //background-color: #e0e0e0;
+    //background-color: #f6f8fa;
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  }
+}

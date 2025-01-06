@@ -49,6 +49,7 @@ export enum Path {
   SdNew = "/sd-new",
   Artifacts = "/artifacts",
   SearchChat = "/search-chat",
+  Pricing = "/pricing",
 }
 
 // 用于存储用户管理功能的字段名

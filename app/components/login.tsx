@@ -8,12 +8,11 @@ import Locale from "../locales";
 import BotIcon from "../icons/bot.svg";
 import LeftIcon from "@/app/icons/left.svg";
 import { safeLocalStorage } from "@/app/utils";
-import clsx from "clsx";
 
 import { LockOutlined, UserOutlined } from "@ant-design/icons";
 import { Form, Input, Flex, Button, Checkbox, message } from "antd";
 import { LeanCloudUserLogin } from "../utils/cloud/leancloud";
-import { getUserId, syncRemoteAppState } from "../utils/user-management";
+import { syncRemoteAppState } from "../utils/user-management";
 
 const storage = safeLocalStorage();
 
@@ -84,33 +83,16 @@ const validatePassword = (_: any, value: any) => {
 function onClosePage() {
   console.log("page closed");
 }
+//<div className={clsx("no-dark", styles["login-logo"])}>
+//  <BotIcon />
+//</div>
 
+//<div className={styles["login-title"]}>{Locale.Login.Title}</div>
 export function LoginPage() {
   const navigate = useNavigate();
   const accessStore = useAccessStore();
 
-  useEffect(() => {
-    const checkUser = async () => {
-      // 查询本地存储的用户id是否有效
-      const user_id = await getUserId();
-      // 查询到该id有效用户
-      if (user_id) {
-        // 加载云端配置并跳转到功能页
-        syncRemoteAppState(user_id).then(() => {
-          navigate(Path.Chat);
-        });
-      }
-    };
-
-    // 页面加载时校验用户登录是否有效，如果已经有效就直接跳转到功能页面, 无需登录
-    checkUser();
-
-    // 监听页面刷新和关闭事件, 触发时执行用户配置保存至云端
-    //window.addEventListener("beforeunload", onClosePage);
-    //return () => {
-    //  window.removeEventListener("beforeunload", onClosePage);
-    //}
-  }, [navigate]);
+  useEffect(() => {}, [navigate]);
 
   return (
     <div className={styles["login-page"]}>
@@ -122,13 +104,21 @@ export function LoginPage() {
         ></IconButton>
       </div>
 
-      <div className={clsx("no-dark", styles["login-logo"])}>
-        <BotIcon />
-      </div>
-
-      <div className={styles["login-title"]}>{Locale.Login.Title}</div>
-
       <div className={styles["login-formborder"]}>
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            marginTop: "10vh",
+            marginBottom: "5vh",
+          }}
+        >
+          <div style={{ transform: "scale(1.4)" }}>
+            <BotIcon />
+          </div>
+          <div style={{ fontSize: "24px", marginLeft: "1vw" }}>账号登录</div>
+        </div>
         <Form
           name="login"
           initialValues={{ remember: true }}
@@ -139,14 +129,22 @@ export function LoginPage() {
             name="account"
             rules={[{ required: true, validator: validateAccount }]}
           >
-            <Input prefix={<UserOutlined />} placeholder="账号/手机号/邮箱" />
+            <Input
+              prefix={<UserOutlined />}
+              placeholder="账号/手机号/邮箱"
+              style={{ height: "5vh" }}
+            />
           </Form.Item>
 
           <Form.Item
             name="password"
             rules={[{ required: true, validator: validatePassword }]}
           >
-            <Input.Password prefix={<LockOutlined />} placeholder="密码" />
+            <Input.Password
+              prefix={<LockOutlined />}
+              placeholder="密码"
+              style={{ height: "5vh" }}
+            />
           </Form.Item>
 
           <Form.Item>
@@ -163,7 +161,12 @@ export function LoginPage() {
           </Form.Item>
 
           <Form.Item>
-            <Button block type="primary" htmlType="submit">
+            <Button
+              block
+              type="primary"
+              htmlType="submit"
+              style={{ height: "5vh" }}
+            >
               登录
             </Button>
           </Form.Item>
