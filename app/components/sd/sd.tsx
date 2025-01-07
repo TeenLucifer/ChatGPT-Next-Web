@@ -97,7 +97,14 @@ export function Sd() {
   const scrollRef = useRef<HTMLDivElement>(null);
   const sdStore = useSdStore();
   const [sdImages, setSdImages] = useState(sdStore.draw);
+  const isHome = location.pathname === Path.Home;
+  const isAuth = location.pathname === Path.Auth;
   const isSd = location.pathname === Path.Sd;
+  const isSdNew = location.pathname === Path.SdNew;
+  const isChat = location.pathname === Path.Chat;
+  const isLogin = location.pathname === Path.Login;
+  const isSignup = location.pathname === Path.Signup;
+  const isPricing = location.pathname === Path.Pricing;
 
   useEffect(() => {
     setSdImages(sdStore.draw);
@@ -106,7 +113,12 @@ export function Sd() {
   return (
     <>
       <SideBar className={clsx({ [homeStyles["sidebar-show"]]: isSd })} />
-      <WindowContent>
+      <WindowContent
+        isHome={isHome}
+        isLogin={isLogin}
+        isSignup={isSignup}
+        isPricing={isPricing}
+      >
         <div className={chatStyles.chat} key={"1"}>
           <div className="window-header" data-tauri-drag-region>
             {isMobileScreen && (

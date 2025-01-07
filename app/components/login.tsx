@@ -4,7 +4,6 @@ import { useEffect } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { Path } from "../constant";
 import { useAccessStore } from "../store";
-import Locale from "../locales";
 import BotIcon from "../icons/bot.svg";
 import LeftIcon from "@/app/icons/left.svg";
 import { safeLocalStorage } from "@/app/utils";
@@ -99,7 +98,7 @@ export function LoginPage() {
       <div className={styles["login-header"]}>
         <IconButton
           icon={<LeftIcon />}
-          text={Locale.Login.Return}
+          text={"返回主页"}
           onClick={() => navigate(Path.Home)}
         ></IconButton>
       </div>

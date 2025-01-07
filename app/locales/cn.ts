@@ -29,25 +29,6 @@ const cn = {
     TopTips:
       "🥳 NextChat AI 首发优惠，立刻解锁 OpenAI o1, GPT-4o, Claude-3.5 等最新大模型",
   },
-  Login: {
-    Return: "返回主页",
-    Title: "账号登录",
-    Account: "账号/邮箱/手机号",
-    Password: "密码",
-    Confirm: "登录",
-    TopTips:
-      "🥳 NextChat AI 首发优惠，立刻解锁 OpenAI o1, GPT-4o, Claude-3.5 等最新大模型",
-  },
-  Signup: {
-    Return: "返回主页",
-    Title: "注册账号",
-    Account: "账号/邮箱/手机号",
-    Password: "输入至少6位密码",
-    PasswordConfirm: "重新输入密码",
-    Confirm: "注册",
-    TopTips:
-      "🥳 NextChat AI 首发优惠，立刻解锁 OpenAI o1, GPT-4o, Claude-3.5 等最新大模型",
-  },
   ChatItem: {
     ChatItemCount: (count: number) => `${count} 条对话`,
   },
